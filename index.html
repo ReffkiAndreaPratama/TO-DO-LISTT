@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#111827">
+  <title>Pocket — Expense Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <a class="brand" href="#"><span class="brand-icon">₱</span><span>pocket<span>.</span></span></a>
+      <p class="side-caption">MENU UTAMA</p>
+      <button class="side-link active" data-view="overview"><span>▦</span> Ringkasan</button>
+      <button class="side-link" data-view="transactions"><span>↕</span> Semua transaksi</button>
+      <div class="sidebar-bottom">
+        <div class="tip-card"><span class="tip-icon">✦</span><strong>Uangmu, kendalimu.</strong><p>Catat setiap transaksi kecil. Kebiasaan baik dimulai dari hal sederhana.</p></div>
+        <button id="themeBtn" class="theme-btn"><span id="themeIcon">☾</span><span id="themeText">Mode gelap</span></button>
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div><p class="eyebrow" id="dateLabel">KEUANGAN PRIBADI</p><h1>Ringkasan keuangan<span>.</span></h1><p class="muted">Pantau arus uangmu, buat keputusan lebih bijak.</p></div>
+        <button class="add-btn" id="addBtn"><span>＋</span> Tambah transaksi</button>
+      </header>
+
+      <section class="summary-grid">
+        <article class="summary-card balance-card">
+          <div class="card-label">Total saldo bersih <span class="small-icon">◈</span></div>
+          <div class="money" id="balanceValue">Rp0</div>
+          <p class="card-note">Pemasukan dikurangi pengeluaran</p>
+          <div class="balance-decoration">↗</div>
+        </article>
+        <article class="summary-card">
+          <div class="card-label">Pemasukan <span class="round-icon income-icon">↓</span></div>
+          <div class="money" id="incomeValue">Rp0</div>
+          <p class="card-note"><span class="green-text">●</span> Uang yang kamu terima</p>
+        </article>
+        <article class="summary-card">
+          <div class="card-label">Pengeluaran <span class="round-icon expense-icon">↑</span></div>
+          <div class="money" id="expenseValue">Rp0</div>
+          <p class="card-note"><span class="red-text">●</span> Uang yang kamu gunakan</p>
+        </article>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel spending-panel">
+          <div class="panel-head"><div><h2>Pengeluaran per kategori</h2><p class="muted">Distribusi pengeluaran bulan ini</p></div><select id="chartMonth" aria-label="Pilih bulan untuk grafik"></select></div>
+          <div class="chart-layout"><div class="donut-wrap"><div id="donut" class="donut"><div class="donut-center"><strong id="donutTotal">Rp0</strong><span>Total keluar</span></div></div></div><div id="legend" class="legend"></div></div>
+          <div id="chartEmpty" class="chart-empty hidden">Belum ada pengeluaran pada bulan ini.</div>
+        </article>
+        <article class="panel recent-panel">
+          <div class="panel-head"><div><h2>Transaksi terbaru</h2><p class="muted">Aktivitas keuangan terakhirmu</p></div><button id="viewAllBtn" class="link-btn">Lihat semua ↗</button></div>
+          <div id="recentList" class="recent-list"></div>
+          <div id="recentEmpty" class="empty-small hidden"><span>◈</span><strong>Belum ada transaksi</strong><p>Tambahkan transaksi pertamamu.</p></div>
+        </article>
+      </section>
+
+      <section class="panel transactions-panel" id="allTransactions">
+        <div class="panel-head transaction-head"><div><h2>Semua transaksi</h2><p class="muted">Riwayat pemasukan dan pengeluaran</p></div><div class="filters"><label class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="Cari transaksi..." aria-label="Cari transaksi"></label><select id="typeFilter" aria-label="Filter tipe"><option value="all">Semua tipe</option><option value="income">Pemasukan</option><option value="expense">Pengeluaran</option></select><select id="monthFilter" aria-label="Filter bulan"></select></div></div>
+        <div class="table-wrap"><table><thead><tr><th>TRANSAKSI</th><th>KATEGORI</th><th>TANGGAL</th><th>JUMLAH</th><th></th></tr></thead><tbody id="transactionRows"></tbody></table></div>
+        <div id="tableEmpty" class="empty-table hidden">Tidak ada transaksi yang cocok.</div>
+        <div class="table-footer"><span id="transactionCount">0 transaksi</span><button id="clearBtn" class="danger-link">Hapus semua data</button></div>
+      </section>
+      <footer class="footer">Dikelola dengan <span>♥</span> oleh dirimu sendiri · Data tersimpan di browser</footer>
+    </main>
+  </div>
+
+  <dialog id="transactionDialog" class="dialog">
+    <form id="transactionForm">
+      <div class="dialog-head"><div><p class="eyebrow">CATAT ARUS UANG</p><h2 id="dialogTitle">Tambah transaksi</h2></div><button type="button" id="closeBtn" class="close-btn" aria-label="Tutup">×</button></div>
+      <div class="type-switch"><button type="button" class="type-option selected income-option" data-type="income">↓ Pemasukan</button><button type="button" class="type-option" data-type="expense">↑ Pengeluaran</button></div>
+      <label class="label" for="nameInput">Nama transaksi <span>*</span></label><input id="nameInput" class="control" maxlength="100" placeholder="Contoh: Uang bulanan" required>
+      <label class="label" for="amountInput">Jumlah (Rupiah) <span>*</span></label><div class="amount-input"><span>Rp</span><input id="amountInput" type="number" class="control" min="1" max="999999999999" step="1" placeholder="50000" required></div>
+      <div class="two-col"><div><label class="label" for="categoryInput">Kategori</label><select id="categoryInput" class="control"></select></div><div><label class="label" for="dateInput">Tanggal</label><input id="dateInput" type="date" class="control" required></div></div>
+      <label class="label" for="noteInput">Catatan <small>Opsional</small></label><textarea id="noteInput" class="control" rows="2" maxlength="250" placeholder="Tambahkan keterangan..."></textarea>
+      <div class="dialog-actions"><button type="button" id="cancelBtn" class="cancel-btn">Batal</button><button type="submit" class="add-btn" id="saveBtn">Simpan transaksi</button></div>
+    </form>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="script.js"></script>
+</body>
+</html>
